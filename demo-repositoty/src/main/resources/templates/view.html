@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Xem Nhân viên</title>
+</head>
+<body>
+    <h1>Thông tin Nhân viên</h1>
+    <p>ID: <span th:text="${employee.id_entity}"></span></p>
+    <p>Họ: <span th:text="${employee.firstName_entity}"></span></p>
+    <p>Tên: <span th:text="${employee.lastName_entity}"></span></p>
+    <p>Địa chỉ: <span th:text="${employee.address_entity}"></span></p>
+    <p>Tuổi: <span th:text="${employee.age_entity}"></span></p>
+    <p>Birth Date: <span th:text="${employee.birthDate_entity}"></span></p>
+    <p>Active: <span th:text="${employee.active_entity}"></span></p>
+    <a th:href="@{/employees}">Quay lại danh sách</a>
+</body>
+</html>

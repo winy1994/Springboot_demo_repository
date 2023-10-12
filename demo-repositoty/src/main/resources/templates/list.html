@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Nhân viên</title>
+</head>
+<body>
+    <h1>Danh sách Nhân viên</h1>
+    <a href="/employees">View All Employees</a>
+    <form method="post" action="/employees/search">
+        <input type="text" name="searchTerm" placeholder="Search employees">
+        <button type="submit">Search</button>
+    </form>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Họ</th>
+            <th>Tên</th>
+            <th>Địa chỉ</th>
+            <!--start :thêm vào -->
+            <th>Tuổi</th>
+            <th>BirthDate</th>
+            <th>Active</th>
+            <!--end :thêm vào -->
+            <th>Thao tác</th>
+        </tr>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id_entity}">ID</td>
+            <td th:text="${employee.firstName_entity}">Họ</td>
+            <td th:text="${employee.lastName_entity}">Tên</td>
+            <td th:text="${employee.address_entity}">Địa chỉ</td>
+            <!--start :thêm vào -->
+            <td th:text="${employee.age_entity}">Tuổi</td>
+            <td th:text="${employee.birthDate_entity}">BirthDate</td>
+            <td th:text="${employee.active_entity}">Active</td>
+            <!--start :thêm vào -->
+            <td>
+                <a th:href="@{/employees/__${employee.id_entity}__}">Xem</a>
+                <a th:href="@{/employees/edit/__${employee.id_entity}__}">Sửa</a>
+                <a th:href="@{/employees/delete/__${employee.id_entity}__}">Xóa</a>
+            </td>
+        </tr>
+    </table>
+    <a th:href="@{/employees/new}">Thêm Nhân viên</a>
+</body>
+</html>

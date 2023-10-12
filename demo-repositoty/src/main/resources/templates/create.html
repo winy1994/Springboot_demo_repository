@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Nhân viên</title>
+    <style>
+        .error {
+            border: 2px solid red;
+        }
+
+        .error-message {
+            color: red;
+        }
+       .error-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: none;
+        }
+        .error-indicator::after {
+            content: "*";
+            color: red;
+        }
+
+        .input-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+	<!--=========== START : chưa xet đên ngoại lệ khi nhập ở html ================-->
+    <!--<h1>Thêm Nhân viên mới</h1>
+    <form method="post" action="/employees/new">
+        <label for="firstName">Họ:</label>
+        <input type="text" id="firstName" name="firstName_entity" required><br>
+        <label for="lastName">Tên:</label>
+        <input type="text" id="lastName" name="lastName_entity" required><br>
+        <label for="address">Địa chỉ:</label>
+        <input type="text" id="address" name="address_entity" required><br>
+        <input type="submit" value="Lưu">
+         Hiển thị thông báo lỗi nếu có khi dùng ValidateException 
+	    <div th:if="${errorMessages}" class="error-messages">
+        <ul>
+            <li th:each="errorMessage : ${errorMessages}" th:text="${errorMessage}"></li>
+        </ul>
+    </div>
+    </form>
+    <a href="/employees">Quay lại danh sách</a>-->
+    
+    <!--=========== END : chưa xet đên ngoại lệ khi nhập ở html ================-->
+    
+    <!--=========== START : xet đên ngoại lệ khi nhập ở html ================-->
+    <h1>Thêm Nhân viên mới</h1>
+    <form method="post" action="/employees/new" onsubmit="return validateForm();">
+        <label for="firstName">Họ:</label>
+        <div class="input-container">
+            <input 
+            	type="text" 
+            	id="firstName" 
+            	name="firstName_entity"
+            	required>
+            <span class="error-indicator" id="firstName-indicator"></span>
+            <span id="firstName-error" class="error-message"></span>
+        </div><br>
+
+        <label for="lastName">Tên:</label>
+        <div class="input-container">
+            <input type="text" id="lastName" name="lastName_entity" required>
+            <span id="lastName-error" class="error-message"></span>
+            <span class="error-indicator" id="lastName-indicator"></span>
+        </div><br>
+
+        <label for="address">Địa chỉ:</label>
+        <div class="input-container">
+            <input type="text" id="address" name="address_entity" required>
+            <span id="address-error" class="error-message"></span>
+            <span class "error-indicator" id="address-indicator"></span>
+        </div><br>
+
+        <label for="age">Tuổi:</label>
+		<div class="input-container">
+		    <input type="number" id="age" name="age_entity" required>
+		    <span id="age-error" class="error-message"></span>
+		    <span class="error-indicator" id="age-indicator"></span>
+		</div><br>
+
+        <label for="birthDate">Ngày sinh:</label>
+        <div class="input-container">
+            <input type="date" id="birthDate" name="birthDate_entity" required>
+            <span id="birthDate-error" class="error-message"></span>
+            <span class="error-indicator" id="birthDate-indicator"></span>
+        </div><br>
+
+        <label for="active">Active:</label>
+		<div class="input-container">
+		    <input type="radio" id="active-yes" name="active_entity" value="true" required>
+		    <label for="active-yes">Có</label>
+		    <input type="radio" id="active-no" name="active_entity" value="false">
+		    <label for="active-no">Không</label>
+		</div><br>
+
+        <input type="submit" value="Lưu">
+        
+        <!-- Hiển thị thông báo lỗi nếu có khi dùng ValidateException -->
+        <div th:if="${errorMessages}" class="error-messages">
+            <ul>
+                <li th:each="errorMessage : ${errorMessages}" th:text="${errorMessage}"></li>
+            </ul>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+    var currentInput = null;
+
+    function validateForm(event) {
+        event.preventDefault(); // Prevent the default form submission
+        var inputs = document.querySelectorAll("input[type='text'], input[type='number'], input[type='date']");
+        var isValid = true;
+
+        inputs.forEach(function(input) {
+            var inputValue = input.value;
+
+            if (input.type === "date") {
+                if (!isValidDate(inputValue)) {
+                    showError(input, "Ngày sinh không hợp lệ.");
+                    isValid = false;
+                } else {
+                    hideError(input);
+                }
+            } else if (!isValidInput(inputValue)) {
+                showError(input, "Không được chứa ký tự đặc biệt.");
+                isValid = false;
+            } else {
+                hideError(input);
+            }
+        });
+
+        if (isValid) {
+            // Form data is valid, you can send it to the server here
+            // For this example, we will just log the data to the console
+            var formData = new FormData(document.querySelector("form"));
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+        }
+    }
+
+    function isValidInput(input) {
+        var regex = /^[a-zA-Z0-9/-]*$/; // Allow letters, numbers, "/", and "-"
+        return regex.test(input);
+    }
+
+    function isValidDate(date) {
+        // Regular expressions to validate date formats "YYYY/MM/DD" or "YYYY-MM-DD"
+        var dateRegex1 = /^\d{4}\/\d{2}\/\d{2}$/;
+        var dateRegex2 = /^\d{4}-\d{2}-\d{2}$/;
+        return dateRegex1.test(date) || dateRegex2.test(date);
+    }
+
+    function showError(inputElement, errorMessage) {
+        inputElement.classList.add("error");
+        var errorElement = document.getElementById(inputElement.id + "-error");
+        var errorIndicator = document.getElementById(inputElement.id + "-indicator");
+        errorElement.innerText = errorMessage;
+        errorIndicator.style.display = "block";
+    }
+
+    function hideError(inputElement) {
+        inputElement.classList.remove("error");
+        var errorElement = document.getElementById(inputElement.id + "-error");
+        var errorIndicator = document.getElementById(inputElement.id + "-indicator");
+        errorElement.innerText = "";
+        errorIndicator.style.display = "none";
+    }
+    
+
+    var inputs = document.querySelectorAll("input[type='text'], input[type='number'], input[type='date']");
+    inputs.forEach(function(input) {
+        input.addEventListener("blur", function() {
+            validateForm();
+        });
+    });
+</script>
+
+    <!--=========== END : xet đên ngoại lệ khi nhập ở html ================-->
+</body>
+</html>
